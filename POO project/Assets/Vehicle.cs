@@ -1,51 +1,65 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Vehicle : MonoBehaviour
 {
+    //Vars
 
-    private Rigidbody _vehicleRb;
-    [SerializeField]
-    private float _vehicleSpeed;
-    public float VehicleSpeed
-    {
-        get => _vehicleSpeed;
-        set => _vehicleSpeed = value;
-    }
-    [SerializeField]
-    private float _vehicleTorque;
-    public float VehicleTorque
-    {
-        get => _vehicleTorque;
-        set => _vehicleTorque = value;
-    }
+    private float _horizontal;
+    private float _verticalInput;
+    [SerializeField] private float _motorForce;
 
-    private void Awake()
-    {
-        _vehicleRb = GetComponent<Rigidbody>();
-    }
+
+    private bool _isBreaking;
+
+
+    [SerializeField]
+    private List<WheelCollider> wheels;
+
+
+
+
+    //End vars
+
+
+
 
 
     private void FixedUpdate()
     {
 
 
-
+        GetInput();
         Movement();
+
+
+    }
+
+    private void GetInput()
+    {
+        _horizontal = Input.GetAxis("Horizontal");
+        _verticalInput = Input.GetAxis("Vertical");
+        _isBreaking = Input.GetKey(KeyCode.Space);
 
 
     }
 
     private void Movement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
-        _vehicleRb.AddRelativeForce(Vector3.forward * verticalInput * _vehicleSpeed * Time.deltaTime, ForceMode.Force);
 
 
-        _vehicleRb.AddTorque(Vector3.up * horizontalInput * _vehicleTorque * Time.deltaTime, ForceMode.Acceleration);
+        foreach (var wheel in wheels)
+        {
+            wheel.motorTorque = _verticalInput * _motorForce;
+        }
+
+        
+
+
+
+
     }
 
 
